@@ -5,22 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Sunah Harian</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9; }
-    h1 { text-align: center; color: #2c3e50; }
-    .table-container { overflow-x: auto; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-    th { background-color: #27ae60; color: white; white-space: nowrap; }
-    tr:nth-child(even) { background-color: #f9f9f9; }
-    .status-true { color: #27ae60; font-weight: bold; }
-    .status-false { color: #e74c3c; font-weight: bold; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
+    h1 { text-align: center; color: #1b4332; margin-bottom: 20px; font-weight: 700; }
+    .table-container { overflow-x: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border: 1px solid #e0e0e0; padding: 10px 8px; text-align: center; }
+    th { background-color: #2d6a4f; color: white; white-space: nowrap; font-weight: 600; }
+    tr:nth-child(even) { background-color: #f8f9fa; }
+    tr:hover { background-color: #f1f5f3; }
+    .status-true { color: #2d6a4f; font-weight: bold; font-size: 15px; }
+    .status-false { color: #d90429; font-weight: bold; font-size: 15px; }
+    .date-cell { font-weight: 600; color: #2b2d42; white-space: nowrap; }
+    .percent-cell { font-weight: 700; color: #1b4332; background-color: #e8f5e9; }
   </style>
 </head>
 <body>
 
   <h1>Dashboard Sunah Harian</h1>
   <div class="table-container">
-    <table id="checklistTable">
+    <table>
       <thead>
         <tr id="tableHeader">
           <th>Memuat data...</th>
@@ -44,42 +47,72 @@
 
     const dataRef = ref(db, '/');
     onValue(dataRef, (snapshot) => {
-      const data = snapshot.val();
-      if (!data) return;
+      const rawData = snapshot.val();
+      if (!rawData) return;
+
+      // Konversi data ke array jika berupa objek
+      let dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
+
+      // Cari baris yang berisi pemetaan nama kolom (baris yang memiliki kunci "kolom_2")
+      let headerMapping = dataArray.find(item => item["kolom_2"] !== undefined);
+      
+      // Ambil hanya baris data tanggal (abaikan baris instruksi dan baris header)
+      let rowDataList = dataArray.filter(item => {
+        let firstVal = Object.values(item)[0];
+        return typeof firstVal === 'string' && firstVal.match(/^\d{4}-\d{2}-\d{2}$/);
+      });
+
+      if (!headerMapping || rowDataList.length === 0) return;
 
       const headerRow = document.getElementById("tableHeader");
       const bodyContainer = document.getElementById("tableBody");
 
-      // Bersihkan isi tabel sebelum diisi
       headerRow.innerHTML = "";
       bodyContainer.innerHTML = "";
 
-      // Ambil daftar nama kolom dari baris pertama
-      const keys = Object.keys(data[0]);
+      // Dapatkan kunci-kunci kolom secara terurut
+      const keys = Object.keys(headerMapping);
 
-      // Buat Header Tabel
+      // 1. Buat Header Tabel yang Rapi
       keys.forEach(key => {
         const th = document.createElement("th");
-        th.textContent = key.replace(/_/g, " ");
+        th.textContent = headerMapping[key];
         headerRow.appendChild(th);
       });
 
-      // Isi Baris Data
-      data.forEach(item => {
+      // 2. Isi Baris Data
+      rowDataList.forEach(item => {
         const tr = document.createElement("tr");
-        keys.forEach(key => {
+        
+        keys.forEach((key, index) => {
           const td = document.createElement("td");
           let val = item[key];
 
-          if (val === true || val === "TRUE") {
-            td.innerHTML = '<span class="status-true">✓</span>';
-          } else if (val === false || val === "FALSE") {
-            td.innerHTML = '<span class="status-false">✗</span>';
+          if (index === 0) {
+            // Kolom Tanggal
+            td.textContent = val || "-";
+            td.className = "date-cell";
+          } else if (key === "kolom_18" || headerMapping[key] === "% Selesai") {
+            // Kolom Persentase
+            if (typeof val === 'number') {
+              td.textContent = Math.round(val * 100) + "%";
+            } else {
+              td.textContent = val || "0%";
+            }
+            td.className = "percent-cell";
           } else {
-            td.textContent = val !== undefined ? val : "-";
+            // Kolom Checklist
+            if (val === true || val === "TRUE") {
+              td.innerHTML = '<span class="status-true">✓</span>';
+            } else if (val === false || val === "FALSE") {
+              td.innerHTML = '<span class="status-false">✗</span>';
+            } else {
+              td.textContent = val !== undefined ? val : "-";
+            }
           }
           tr.appendChild(td);
         });
+        
         bodyContainer.appendChild(tr);
       });
     });
