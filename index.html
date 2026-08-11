@@ -1,465 +1,755 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rutin Harian — Waktu & Rezeki</title>
-  <style>
-    :root {
-      --bg-dark: #0f2b26;
-      --card-dark: #123730;
-      --accent-gold: #c9a227;
-      --text-light: #ffffff;
-      --text-muted: #8e9b97;
-      --bg-light: #f4f7f6;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist Harian — Waktu & Rezeki</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Work+Sans:wght@400;500;600;700&display=swap');
 
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-light);
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
+:root{
+  --ink:#0f2e28;
+  --deep:#0b3d33;
+  --emerald:#1c6b56;
+  --gold:#b8893f;
+  --gold-soft:#e8d5b0;
+  --paper:#f7f3ea;
+  --line:#d8cdb4;
+  --done:#7d9c8f;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  font-family:'Work Sans',sans-serif;
+  color:var(--ink);
+  padding:0 0 60px;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 24px;}
 
-    /* Hero Banner Utama */
-    .hero {
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      padding: 40px 20px;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
+.hero{
+  background:var(--deep);
+  color:var(--gold-soft);
+  padding:44px 24px 36px;
+  position:relative;
+  overflow:hidden;
+  border-bottom:3px solid var(--gold);
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  top:-40px; right:-40px;
+  width:220px;height:220px;
+  border:1px solid rgba(232,213,176,0.25);
+  border-radius:50%;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  top:-10px; right:-10px;
+  width:160px;height:160px;
+  border:1px solid rgba(232,213,176,0.18);
+  border-radius:50%;
+}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:0 24px;}
+.eyebrow{
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:10px;
+}
+.hero h1{
+  font-family:'Amiri',serif;
+  font-weight:700;
+  font-size:32px;
+  margin:0 0 8px;
+  color:#fdf9f0;
+}
+.hero p{margin:0;font-size:14.5px;color:#cfe3da;line-height:1.6;max-width:46ch;}
 
-    .hero-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
+.progress-shell{
+  margin-top:24px;background:rgba(255,255,255,0.08);
+  border-radius:999px;height:8px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;background:var(--gold);width:0%;
+  transition:width .35s ease;
+}
+.progress-label{font-size:12.5px;color:var(--gold-soft);margin-top:8px;letter-spacing:.02em;}
+#syncStatus{font-size:12px;color:var(--gold-soft);margin-top:6px;min-height:16px;}
 
-    .hero-subtitle {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: var(--accent-gold);
-      text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
+.config{
+  margin:24px 0;padding:16px;background:#eef3ef;
+  border-left:3px solid var(--emerald);border-radius:0 8px 8px 0;font-size:13px;
+}
+.config input{width:100%;padding:8px;margin-top:6px;border:1px solid var(--line);border-radius:6px;font-family:monospace;font-size:12px;}
+.config button{margin-top:8px;background:var(--emerald);color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;}
+.config .small{display:block;margin-top:6px;font-size:11.5px;color:#8a7f66;}
 
-    .hero-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 0 15px 0;
-      font-family: Georgia, serif;
-    }
+.date-head{font-family:'Amiri',serif;color:var(--deep);font-size:16px;margin:20px 0 0;}
 
-    .hero-desc {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #b0c2be;
-      max-width: 550px;
-      margin-bottom: 20px;
-    }
+.section{margin-top:36px;}
+.section-head{
+  display:flex;align-items:baseline;gap:10px;
+  border-bottom:1px solid var(--line);
+  padding-bottom:8px;margin-bottom:14px;
+}
+.section-time{
+  font-family:'Amiri',serif;font-weight:700;color:var(--emerald);
+  font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  background:#e9f0ec;padding:3px 10px;border-radius:5px;
+}
+.section-head h2{
+  font-family:'Amiri',serif;font-size:20px;margin:0;color:var(--deep);font-weight:700;
+}
 
-    .progress-bar-bg {
-      background: rgba(255,255,255,0.1);
-      height: 8px;
-      border-radius: 10px;
-      overflow: hidden;
-      max-width: 450px;
-    }
+.item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:11px 4px;border-radius:8px;cursor:pointer;
+  transition:background .15s ease;
+}
+.item:hover{background:#eee7d6;}
+.item.saving{opacity:0.55;pointer-events:none;}
+.box{
+  flex:none;width:20px;height:20px;margin-top:2px;
+  border:1.5px solid var(--emerald);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s ease;
+}
+.box svg{opacity:0;transform:scale(.5);transition:all .15s ease;}
+.item.done .box{background:var(--emerald);border-color:var(--emerald);}
+.item.done .box svg{opacity:1;transform:scale(1);}
+.item-text{font-size:15px;line-height:1.45;}
+.item.done .item-text{color:var(--done);text-decoration:line-through;text-decoration-color:var(--done);}
+.item-sub{display:block;font-size:12.5px;color:#8a7f66;margin-top:2px;font-style:italic;}
+.item.done .item-sub{color:var(--done);}
 
-    .progress-bar-fill {
-      background: var(--accent-gold);
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
+.footnote{
+  margin-top:44px;padding:18px 20px;
+  background:#eef3ef;border-left:3px solid var(--emerald);
+  border-radius:0 8px 8px 0;
+  font-size:13px;line-height:1.65;color:#3d5049;
+}
+.footnote b{color:var(--deep);}
+.footnote .note-title{
+  font-family:'Amiri',serif;font-weight:700;font-size:14.5px;
+  color:var(--deep);margin:0 0 10px;
+}
+.footnote ul.note-list{
+  margin:0 0 16px;padding-left:18px;
+}
+.footnote ul.note-list li{margin-bottom:6px;}
+.footnote hr.note-divider{
+  border:none;border-top:1px solid var(--line);margin:16px 0;
+}
 
-    .progress-text {
-      font-size: 12px;
-      color: var(--accent-gold);
-      margin-top: 8px;
-      font-weight: 600;
-    }
+.doa-btn{
+  display:inline-block;margin-top:6px;
+  background:none;border:1px solid var(--gold);
+  color:var(--gold);font-family:'Work Sans',sans-serif;
+  font-size:12px;font-weight:600;padding:5px 12px;
+  border-radius:999px;cursor:pointer;
+  transition:all .15s ease;
+}
+.doa-btn:hover{background:var(--gold);color:#fff;}
 
-    /* Main Container */
-    .container {
-      max-width: 800px;
-      margin: 20px auto 40px auto;
-      padding: 0 20px;
-    }
+.stat-badge{
+  display:block;margin-top:5px;
+  font-size:11.5px;color:var(--emerald);font-weight:600;
+  font-family:'Work Sans',sans-serif;
+}
+.stat-badge:empty{display:none;}
 
-    .date-header {
-      font-size: 14px;
-      color: #555;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(11,61,51,0.55);
+  align-items:center;justify-content:center;
+  padding:20px;z-index:100;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--paper);
+  max-width:560px;width:100%;
+  max-height:86vh;overflow-y:auto;
+  border-radius:14px;
+  border-top:4px solid var(--gold);
+  padding:28px 26px 24px;
+  position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+.modal-close{
+  position:absolute;top:16px;right:18px;
+  background:none;border:none;font-size:20px;
+  color:#8a7f66;cursor:pointer;line-height:1;
+  width:28px;height:28px;border-radius:50%;
+}
+.modal-close:hover{background:#eee7d6;color:var(--deep);}
+.modal-title{
+  font-family:'Amiri',serif;font-weight:700;font-size:20px;
+  color:var(--deep);margin:0 0 18px;padding-right:24px;
+}
+.doa-block{margin-bottom:22px;}
+.doa-block:last-child{margin-bottom:0;}
+.doa-block h3{
+  font-family:'Amiri',serif;font-size:15px;color:var(--emerald);
+  margin:0 0 10px;font-weight:700;
+}
+.doa-arabic{
+  font-family:'Amiri',serif;font-size:20px;line-height:2.1;
+  direction:rtl;text-align:right;color:var(--deep);
+  margin-bottom:10px;
+}
+.doa-translit{
+  font-style:italic;font-size:13px;color:#5a6b62;
+  line-height:1.6;margin-bottom:8px;
+}
+.doa-meaning{
+  font-size:13.5px;line-height:1.6;color:var(--ink);
+  margin-bottom:8px;
+}
+.doa-source{
+  font-size:12px;color:var(--gold);font-weight:600;
+}
+.doa-note{
+  margin-top:10px;padding:10px 12px;
+  background:#f3ece0;border-left:2px solid var(--gold);
+  border-radius:0 6px 6px 0;
+  font-size:12px;color:#6b5d42;line-height:1.6;
+}
+.doa-divider{border:none;border-top:1px dashed var(--line);margin:20px 0;}
 
-    /* Section Category */
-    .category-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: #0f2b26;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 30px;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+.reset{
+  margin-top:22px;background:none;border:1px solid var(--line);
+  color:#8a7f66;font-size:12.5px;padding:8px 14px;border-radius:6px;
+  cursor:pointer;font-family:'Work Sans',sans-serif;
+}
+.reset:hover{border-color:var(--gold);color:var(--gold);}
 
-    .category-title span {
-      color: var(--accent-gold);
-    }
-
-    /* Checklist Card */
-    .checklist-item {
-      background: white;
-      border-radius: 8px;
-      padding: 14px 18px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      border: 1px solid #e2e8f0;
-      transition: all 0.2s ease;
-    }
-
-    .checklist-item:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    }
-
-    .checklist-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      cursor: pointer;
-      accent-color: var(--bg-dark);
-    }
-
-    .item-content {
-      flex: 1;
-    }
-
-    .item-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .item-desc {
-      font-size: 11px;
-      color: #64748b;
-      margin-top: 3px;
-      font-style: italic;
-    }
-
-    /* Tabel Riwayat & Export CSV */
-    .history-section {
-      margin-top: 50px;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .history-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--bg-dark);
-    }
-
-    .btn-csv {
-      background-color: var(--bg-dark);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .btn-csv:hover {
-      background-color: #164038;
-    }
-
-    .table-responsive {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    th, td {
-      border: 1px solid #e2e8f0;
-      padding: 8px 10px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f8fafc;
-      color: #334155;
-      white-space: nowrap;
-    }
-
-    .status-true { color: #16a34a; font-weight: bold; }
-    .status-false { color: #dc2626; font-weight: bold; }
-  </style>
+/* Styling Tambahan untuk Seksi Tabel Riwayat & Tombol CSV */
+.history-section{
+  margin-top:40px;
+  padding:20px;
+  background:#fff;
+  border-radius:10px;
+  border:1px solid var(--line);
+}
+.history-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+.history-title{
+  font-family:'Amiri',serif;
+  font-size:18px;
+  font-weight:700;
+  color:var(--deep);
+}
+.btn-csv{
+  background:var(--emerald);
+  color:#fff;
+  border:none;
+  padding:8px 16px;
+  font-size:12.5px;
+  font-weight:600;
+  border-radius:6px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.btn-csv:hover{
+  background:var(--deep);
+}
+.table-wrap{
+  overflow-x:auto;
+}
+table.history-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+table.history-table th, table.history-table td{
+  border:1px solid #e0e0e0;
+  padding:8px;
+  text-align:center;
+}
+table.history-table th{
+  background:var(--deep);
+  color:#fff;
+  white-space:nowrap;
+}
+.status-true{color:var(--emerald);font-weight:bold;}
+.status-false{color:#d90429;font-weight:bold;}
+</style>
 </head>
 <body>
 
-  <!-- Banner Atas Utama (Sesuai HTML Lama) -->
-  <div class="hero">
-    <div class="hero-container">
-      <div class="hero-subtitle">RUTINITAS HARIAN</div>
-      <h1 class="hero-title">Waktu & Rezeki</h1>
-      <div class="hero-desc">
-        Checklist manajemen waktu ala sunnah, dipadukan dengan amalan penunjang kelancaran rezeki — mengikuti ritme lima waktu sholat. Tersambung ke database, sinkron di semua device.
-      </div>
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-text" id="progressText">0 dari 16 selesai</div>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Rutinitas Harian</div>
+    <h1>Waktu &amp; Rezeki</h1>
+    <p>Checklist manajemen waktu ala sunnah, dipadukan dengan amalan penunjang kelancaran rezeki — mengikuti ritme lima waktu sholat. Tersambung ke spreadsheet-mu, sinkron di semua device.</p>
+    <div class="progress-shell"><div class="progress-fill" id="fill"></div></div>
+    <div class="progress-label" id="label">Memuat...</div>
+    <div id="syncStatus"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="config" id="configBox">
+    <b>Pengaturan (isi sekali saja):</b><br>
+    Tempel URL Web App Apps Script (diakhiri <code>/exec</code>):
+    <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+    <button onclick="saveConfig()">Simpan &amp; Muat</button>
+    <span class="small">URL ini didapat dari Deploy &gt; New deployment &gt; Web app di Apps Script spreadsheet-mu.</span>
+  </div>
+
+  <h3 class="date-head" id="dateHead"></h3>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-time">Subuh</span>
+      <h2>Mengawali Hari</h2>
+    </div>
+    <div class="item" data-item="Sholat Subuh"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Subuh berjamaah / tepat waktu<span class="item-sub">Awal keberkahan waktu, HR. Muslim</span><button class="doa-btn" onclick="openHammModal(event)">Lihat doa perlindungan →</button><span class="stat-badge" data-stat-item="Sholat Subuh"></span></div></div>
+    <div class="item" data-item="Sedekah Subuh"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sedekah subuh<span class="item-sub">Mengawali hari dengan memberi sebelum meminta</span></div></div>
+    <div class="item" data-item="Dzikir Pagi & Istighfar"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Dzikir pagi &amp; istighfar<span class="item-sub">QS. Nuh 71:10-12 — istighfar dikaitkan dengan datangnya rezeki</span></div></div>
+    <div class="item" data-item="Susun Prioritas Hari Ini"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Susun 2-3 prioritas hari ini</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-time">Dhuha</span>
+      <h2>Ikhtiar &amp; Kerja</h2>
+    </div>
+    <div class="item" data-item="Sholat Dhuha"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Dhuha<span class="item-sub">HR. Muslim no. 721 — anjuran sholatnya shahih</span><button class="doa-btn" onclick="openDoaModal(event)">Lihat doa Dhuha &amp; rezeki →</button><span class="stat-badge" data-stat-item="Sholat Dhuha"></span></div></div>
+    <div class="item" data-item="Doa & Niat Mulai Kerja"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Mulai kerja dengan doa &amp; niat, bukan menunda<span class="item-sub">"Bismillahi tawakkaltu 'alallah, laa hawla wa laa quwwata illa billah" — HR. Abu Dawud &amp; Tirmidzi. Burung tetap terbang cari makan — usaha + tawakal</span></div></div>
+    <div class="item" data-item="Kerjakan Prioritas Dulu"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Kerjakan tugas terpenting lebih dulu (bukan yang termudah)</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-time">Dzuhur–Ashar</span>
+      <h2>Menjaga Ritme</h2>
+    </div>
+    <div class="item" data-item="Sholat Dzuhur"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Dzuhur — jeda kerja sejenak<button class="doa-btn" onclick="openHammModal(event)">Lihat doa perlindungan →</button><span class="stat-badge" data-stat-item="Sholat Dzuhur"></span></div></div>
+    <div class="item" data-item="Sholat Ashar"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Ashar<button class="doa-btn" onclick="openHammModal(event)">Lihat doa perlindungan →</button><span class="stat-badge" data-stat-item="Sholat Ashar"></span></div></div>
+    <div class="item" data-item="Silaturahmi / Hubungi Keluarga"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Hubungi / tanya kabar keluarga atau kerabat<span class="item-sub">Silaturahmi melapangkan rezeki — HR. Bukhari-Muslim</span></div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-time">Maghrib–Isya</span>
+      <h2>Menutup Hari</h2>
+    </div>
+    <div class="item" data-item="Sholat Maghrib"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Maghrib<button class="doa-btn" onclick="openHammModal(event)">Lihat doa perlindungan →</button><span class="stat-badge" data-stat-item="Sholat Maghrib"></span></div></div>
+    <div class="item" data-item="Sholat Isya"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Sholat Isya<button class="doa-btn" onclick="openHammModal(event)">Lihat doa perlindungan →</button><span class="stat-badge" data-stat-item="Sholat Isya"></span></div></div>
+    <div class="item" data-item="Syukuri Pencapaian"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Syukuri pencapaian hari ini, sekecil apapun<span class="item-sub">QS. Ibrahim 14:7 — bersyukur akan ditambah nikmat</span></div></div>
+    <div class="item" data-item="Doa Syukur Menutup Hari"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Baca doa syukur menutup hari<button class="doa-btn" onclick="openSyukurModal(event)">Lihat doa syukur →</button></div></div>
+    <div class="item" data-item="Muhasabah"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Muhasabah singkat — apa yang bisa diperbaiki besok<span class="item-sub">"Hisablah dirimu sebelum dihisab" — Umar bin Khattab</span></div></div>
+    <div class="item" data-item="Tidur Lebih Awal"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 6l3.5 3.5L11 2" stroke="white" stroke-width="2" fill="none"/></svg></div><div class="item-text">Tidur lebih awal, tidak begadang tanpa keperluan</div></div>
+  </div>
+
+  <div class="footnote">
+    <div class="note-title">Prinsip Utama</div>
+    <ul class="note-list">
+      <li><b>Aktif, tidak menunggu</b> — rezeki dijemput lewat ikhtiar, bukan ditunggu sambil diam.</li>
+      <li><b>Bersilaturahmi</b> — jaga dan sambung hubungan dengan orang tua &amp; kerabat.</li>
+      <li><b>5 sebelum 5</b> — jangan menunda pekerjaan, umur itu pendek: selagi sehat sebelum sakit, selagi luang sebelum sibuk.</li>
+      <li><b>Sedekah continue</b> — kecil tapi rutin, lebih baik daripada besar tapi sesekali.</li>
+      <li><b>Sholat Dhuha — istighfar — sholat 5 waktu tepat waktu</b> — tiga hal ini fondasi harian yang menopang seluruh checklist.</li>
+    </ul>
+    <hr class="note-divider">
+    <b>Catatan:</b> Checklist ini alat bantu praktik, bukan dalil baku — sebagian anjuran (mis. Dhuha, sedekah, silaturahmi) berdasar hadits shahih; sebagian lain (mis. urutan prioritas kerja) adalah kebiasaan baik yang selaras dengan semangat sunnah, bukan perintah tekstual.
+  </div>
+
+  <button class="reset" onclick="resetAll()">Reset centangan hari ini</button>
+
+  <!-- Seksi Riwayat Data Rekap Spreadsheet dari Firebase -->
+  <div class="history-section">
+    <div class="history-header">
+      <div class="history-title">Riwayat Rekap Harian</div>
+      <button class="btn-csv" id="btnDownloadCSV">📥 Unduh CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr id="tableHeader"><th>Memuat data...</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
     </div>
   </div>
 
-  <div class="container">
-    <div class="date-header" id="currentDateText">Hari ini — ...</div>
+</div>
 
-    <!-- Subuh -->
-    <div class="category-title"><span>SUBUH</span> Mengawali Hari</div>
-    <div id="sectionSubuh"></div>
+<div class="modal-overlay" id="doaModal" onclick="if(event.target===this)closeModal('doaModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('doaModal')">✕</button>
+    <div class="modal-title">Rutinitas Doa Dhuha &amp; Rezeki</div>
 
-    <!-- Dhuha -->
-    <div class="category-title"><span>DHUHA</span> Ikhtiar & Kerja</div>
-    <div id="sectionDhuha"></div>
+    <div class="doa-block">
+      <h3>Doa setelah Sholat Dhuha</h3>
+      <div class="doa-arabic">اَللَّهُمَّ إِنَّ الضُّحَاءَ ضُحَاؤُكَ، وَالْبَهَاءَ بَهَاؤُكَ، وَالْجَمَالَ جَمَالُكَ، وَالْقُوَّةَ قُوَّتُكَ، وَالْقُدْرَةَ قُدْرَتُكَ، وَالْعِصْمَةَ عِصْمَتُكَ. اَللَّهُمَّ إِنْ كَانَ رِزْقِي فِي السَّمَاءِ فَأَنْزِلْهُ، وَإِنْ كَانَ فِي الْأَرْضِ فَأَخْرِجْهُ، وَإِنْ كَانَ مُعَسَّرًا فَيَسِّرْهُ، وَإِنْ كَانَ حَرَامًا فَطَهِّرْهُ، وَإِنْ كَانَ بَعِيدًا فَقَرِّبْهُ، بِحَقِّ ضُحَائِكَ وَبَهَائِكَ وَجَمَالِكَ وَقُوَّتِكَ وَقُدْرَتِكَ، آتِنِي مَا آتَيْتَ عِبَادَكَ الصَّالِحِينَ</div>
+      <div class="doa-translit">Allahumma innadh-dhuhaa-a dhuhaa-uka, wal bahaa-a bahaa-uka, wal jamaala jamaaluka, wal quwwata quwwatuka, wal qudrata qudratuka, wal 'ishmata 'ishmatuka. Allahumma in kaana rizqii fis-samaa-i fa anzilhu, wa in kaana fil ardhi fa akhrijhu, wa in kaana mu'assaran fa yassirhu, wa in kaana haraaman fa thahhirhu, wa in kaana ba'iidan fa qarribhu, bihaqqi dhuhaa-ika wa bahaa-ika wa jamaalika wa quwwatika wa qudratika, aatinii maa aatayta 'ibaadakash-shaalihiin.</div>
+      <div class="doa-meaning">"Ya Allah, sesungguhnya waktu dhuha adalah waktu dhuha-Mu, keagungan adalah keagungan-Mu, keindahan adalah keindahan-Mu, kekuatan adalah kekuatan-Mu, kekuasaan adalah kekuasaan-Mu, penjagaan adalah penjagaan-Mu. Ya Allah, jika rezekiku di langit, turunkanlah. Jika di bumi, keluarkanlah. Jika sukar, mudahkanlah. Jika haram, sucikanlah. Jika jauh, dekatkanlah. Dengan hak waktu dhuha-Mu, keagungan-Mu, keindahan-Mu, kekuatan-Mu, dan kekuasaan-Mu, berikanlah kepadaku apa yang Engkau berikan kepada hamba-hamba-Mu yang saleh."</div>
+      <div class="doa-note">Catatan jujur: doa ini sangat masyhur diamalkan turun-temurun, tapi bukan hadits shahih yang sanadnya kuat — statusnya lemah / tidak ada dalam kitab hadits utama. Banyak ulama tetap membolehkan mengamalkannya karena isinya sesuai ajaran Islam, namun baiknya dipahami bukan sebagai sabda Nabi yang pasti.</div>
+    </div>
 
-    <!-- Dzuhur & Ashar -->
-    <div class="category-title"><span>DZUHUR - ASHAR</span> Menjaga Ritme</div>
-    <div id="sectionDzuhur"></div>
+    <hr class="doa-divider">
 
-    <!-- Maghrib & Isya -->
-    <div class="category-title"><span>MAGHRIB - ISYA</span> Penutup Hari</div>
-    <div id="sectionMalam"></div>
+    <div class="doa-block">
+      <h3>Doa Dimudahkan Rezeki (sumber lebih kuat)</h3>
+      <div class="doa-arabic">اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ</div>
+      <div class="doa-translit">Allahummakfinii bihalaalika 'an haraamika, wa aghninii bifadhlika 'amman siwaak</div>
+      <div class="doa-meaning">"Ya Allah, cukupkanlah aku dengan yang halal, jauh dari yang haram. Dan cukupkanlah aku dengan karunia-Mu, tidak butuh kepada selain-Mu."</div>
+      <div class="doa-source">HR. Tirmidzi — kualitas hasan</div>
+    </div>
 
-    <!-- Tabel Riwayat Data (Spreadsheet Rekap) -->
-    <div class="history-section">
-      <div class="history-header">
-        <div class="history-title">Riwayat Rekap Harian</div>
-        <button class="btn-csv" id="btnDownloadCSV">📥 Unduh CSV</button>
-      </div>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr id="tableHeader"><th>Memuat riwayat...</th></tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+    <hr class="doa-divider">
+
+    <div class="doa-block">
+      <h3>Doa Kemudahan Urusan</h3>
+      <div class="doa-arabic">رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي</div>
+      <div class="doa-translit">Rabbisyrah lii shadrii wa yassir lii amrii</div>
+      <div class="doa-meaning">"Ya Tuhanku, lapangkanlah dadaku, dan mudahkanlah urusanku."</div>
+      <div class="doa-source">QS. Thaha 20:25-26 — Al-Qur'an</div>
     </div>
   </div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+<div class="modal-overlay" id="syukurModal" onclick="if(event.target===this)closeModal('syukurModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('syukurModal')">✕</button>
+    <div class="modal-title">Doa Syukur Menutup Hari</div>
+    <div class="doa-block">
+      <div class="doa-arabic">اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ</div>
+      <div class="doa-translit">Allahumma maa amsaa bii min ni'matin au bi ahadin min khalqika faminka wahdaka laa syariika lak, falakal hamdu wa lakasy syukr.</div>
+      <div class="doa-meaning">"Ya Allah, nikmat apa pun yang aku peroleh sore/petang ini, atau yang diperoleh salah seorang dari makhluk-Mu, semua itu dari-Mu semata, tiada sekutu bagi-Mu. Maka bagi-Mu segala puji dan bagi-Mu segala syukur."</div>
+      <div class="doa-source">HR. Abu Dawud, Ibnu Hibban, Ibnu Sunni — hasan. Dibaca di sore hari; versi pagi mengganti "amsaa" dengan "ashbaha".</div>
+    </div>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      databaseURL: "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app"
-    };
+<div class="modal-overlay" id="hammModal" onclick="if(event.target===this)closeModal('hammModal')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('hammModal')">✕</button>
+    <div class="modal-title">Doa Perlindungan Setiap Selesai Sholat</div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app, firebaseConfig.databaseURL);
+    <div class="doa-block">
+      <h3>Doa Karb — Saat Menghadapi Cobaan Berat</h3>
+      <div class="doa-arabic">لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ</div>
+      <div class="doa-translit">La ilaha illallahul-'Azhiimul-Haliim, laa ilaaha illallahu Rabbul-'Arsyil-'Azhiim, laa ilaaha illallahu Rabbus-samaawaati wa Rabbul-ardhi wa Rabbul-'Arsyil-Kariim.</div>
+      <div class="doa-meaning">"Tiada Tuhan yang berhak disembah selain Allah Yang Maha Agung lagi Maha Penyantun. Tiada Tuhan yang berhak disembah selain Allah, Rabb (pemilik) 'Arsy yang agung. Tiada Tuhan yang berhak disembah selain Allah, Rabb langit dan bumi, dan Rabb 'Arsy yang mulia."</div>
+      <div class="doa-source">HR. Bukhari no. 6346, Muslim no. 2730 (juga Tirmidzi &amp; Ibnu Majah) — shahih. Dikenal sebagai "Doa Karb", diucapkan Nabi ﷺ saat menghadapi kesulitan/cobaan berat.</div>
+    </div>
 
-    // Definisi Item Amalan Harian
-    const items = [
-      { id: 'kolom_2', name: 'Sholat Subuh berjamaah / tepat waktu', desc: 'Awal keberkahan waktu', sec: 'sectionSubuh' },
-      { id: 'kolom_3', name: 'Sedekah subuh', desc: 'Mengawali hari dengan memberi sebelum meminta', sec: 'sectionSubuh' },
-      { id: 'kolom_4', name: 'Dzikir pagi & istighfar', desc: 'Istighfar dikaitkan dengan datangnya rezeki', sec: 'sectionSubuh' },
-      { id: 'kolom_5', name: 'Susun 2-3 prioritas hari ini', desc: 'Fokus pada hal berdampak paling besar', sec: 'sectionSubuh' },
-      
-      { id: 'kolom_6', name: 'Sholat Dhuha', desc: 'Anjuran sholatnya shahih', sec: 'sectionDhuha' },
-      { id: 'kolom_7', name: 'Mulai kerja dengan doa & niat', desc: 'Usaha + tawakal', sec: 'sectionDhuha' },
-      { id: 'kolom_8', name: 'Kerjakan tugas terpenting dulu', desc: 'Bukan yang termudah', sec: 'sectionDhuha' },
+    <hr class="doa-divider">
 
-      { id: 'kolom_9', name: 'Sholat Dzuhur', desc: 'Jeda kerja sejenak', sec: 'sectionDzuhur' },
-      { id: 'kolom_10', name: 'Sholat Ashar', desc: 'Menjaga sholat wustha', sec: 'sectionDzuhur' },
-      { id: 'kolom_11', name: 'Hubungi / tanya kabar keluarga atau kerabat', desc: 'Menjaga silaturahmi', sec: 'sectionDzuhur' },
+    <div class="doa-block">
+      <h3>Perlindungan dari Kesedihan, Kemalasan &amp; Lilitan Utang</h3>
+      <div class="doa-arabic">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ، وَقَهْرِ الرِّجَالِ</div>
+      <div class="doa-translit">Allâhumma innî a'ûdzu bika minal hammi wal hazan. Wa a'ûdzu bika minal 'ajzi wal kasal. Wa a'ûdzu bika minal jubni wal bukhl. Wa a'ûdzu bika min gholabatid daini wa qahrir rijâl.</div>
+      <div class="doa-meaning">"Ya Allah, aku berlindung kepada-Mu dari kesedihan dan kegundahan. Aku berlindung kepada-Mu dari kelemahan dan kemalasan. Aku berlindung kepada-Mu dari rasa takut dan sifat kikir. Dan aku berlindung kepada-Mu dari lilitan utang dan tekanan orang-orang."</div>
+      <div class="doa-source">HR. Bukhari no. 2893, 5425, 6363, 6369 (dari Anas bin Malik) — shahih</div>
+    </div>
 
-      { id: 'kolom_12', name: 'Sholat Maghrib', desc: 'Ibadah pembuka malam', sec: 'sectionMalam' },
-      { id: 'kolom_13', name: 'Sholat Isya', desc: 'Penyempurna sholat fardhu', sec: 'sectionMalam' },
-      { id: 'kolom_14', name: 'Syukuri pencapaian hari ini', desc: 'Menjaga pikiran tetap positif', sec: 'sectionMalam' },
-      { id: 'kolom_15', name: 'Doa syukur menutup hari', desc: 'Menutup hari dengan rida', sec: 'sectionMalam' },
-      { id: 'kolom_16', name: 'Muhasabah singkat', desc: 'Evaluasi niat & amalan hari ini', sec: 'sectionMalam' },
-      { id: 'kolom_17', name: 'Tidur lebih awal', desc: 'Agar bisa bangun awal', sec: 'sectionMalam' }
-    ];
+    <hr class="doa-divider">
 
-    // Format Tanggal Hari Ini (YYYY-MM-DD)
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('currentDateText').textContent = `Hari ini — ${today}`;
+    <div class="doa-block">
+      <h3>Perlindungan dari Kekufuran, Utang, Kefakiran &amp; Fitnah Dajjal</h3>
+      <div class="doa-arabic">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالدَّيْنِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ، وَأَعُوذُ بِكَ مِنْ فِتْنَةِ الدَّجَّالِ</div>
+      <div class="doa-translit">Allahumma inni a'udzu bika minal kufri wad daini wal faqri, wa a'udzubika min 'adzabi jahannam, wa a'udzu bika min fitnatid-dajjal.</div>
+      <div class="doa-meaning">"Ya Allah, aku berlindung kepada-Mu dari kekufuran, utang, dan kefakiran. Aku memohon perlindungan kepada-Mu dari azab neraka Jahanam, dan aku memohon perlindungan kepada-Mu dari fitnah Dajjal."</div>
+      <div class="doa-source">HR. An-Nasa'i — hasan. Versi inti "a'udzu bika minal kufri wal faqri" juga di HR. Abu Dawud &amp; An-Nasa'i, dinilai shahih/hasan oleh Al-Albani.</div>
+      <div class="doa-note">Catatan: sebagian ulama membaca ini persis setelah salam, sebagian lagi setelah dzikir wajib — keduanya diperbolehkan, yang penting rutin dibaca.</div>
+    </div>
+  </div>
+</div>
 
-    let fullDataArray = [];
-    let headerMap = {};
+<script>
+// ================= Koneksi ke Spreadsheet (Google Apps Script) =================
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYjydwM9Xrn-llYaYm0B3rwzQ8Vqa6RU2LxOTj9Fxl14BTYrMBxVkHFKMyu98OTO0nMA/exec';
+let SCRIPT_URL = localStorage.getItem('checklistScriptUrl') || DEFAULT_SCRIPT_URL;
+let currentState = {};
 
-    // Render Checklist UI
-    items.forEach(item => {
-      const parent = document.getElementById(item.sec);
-      const div = document.createElement('div');
-      div.className = 'checklist-item';
-      div.innerHTML = `
-        <input type="checkbox" id="chk_${item.id}" data-id="${item.id}">
-        <div class="item-content">
-          <div class="item-title">${item.name}</div>
-          <div class="item-desc">${item.desc}</div>
-        </div>
-      `;
-      parent.appendChild(div);
+function getLocalDateStr(d = new Date()){
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+let todayStr = getLocalDateStr();
 
-      div.querySelector('input').addEventListener('change', (e) => {
-        saveTodayData(item.id, e.target.checked);
-      });
-    });
+const items = document.querySelectorAll('.item');
+const fill = document.getElementById('fill');
+const label = document.getElementById('label');
+const syncStatus = document.getElementById('syncStatus');
 
-    // Jalankan Sinkronisasi Firebase
-    const dataRef = ref(db, '/');
-    onValue(dataRef, (snapshot) => {
-      const rawData = snapshot.val();
-      if (!rawData) return;
+document.getElementById('dateHead').textContent = 'Hari ini — ' + todayStr;
 
-      fullDataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
-      
-      // Ambil Pemetaan Header Nama Kolom
-      headerMap = fullDataArray.find(i => i['kolom_2'] !== undefined) || {};
+function saveConfig(){
+  const val = document.getElementById('scriptUrlInput').value.trim();
+  if(!val) return;
+  SCRIPT_URL = val;
+  localStorage.setItem('checklistScriptUrl', val);
+  document.getElementById('configBox').style.display = 'none';
+  loadToday();
+}
 
-      // Update Checklist Hari Ini
-      const todayRecord = fullDataArray.find(i => Object.values(i)[0] === today);
-      let checkedCount = 0;
+function updateProgress(){
+  const total = items.length;
+  const doneCount = document.querySelectorAll('.item.done').length;
+  fill.style.width = (doneCount/total*100) + '%';
+  label.textContent = doneCount + ' dari ' + total + ' selesai';
+}
 
-      items.forEach(item => {
-        const chk = document.getElementById(`chk_${item.id}`);
-        if (todayRecord && (todayRecord[item.id] === true || todayRecord[item.id] === "TRUE")) {
-          chk.checked = true;
-          checkedCount++;
-        } else {
-          chk.checked = false;
-        }
-      });
+function applyStateToDOM(){
+  items.forEach(el=>{
+    const key = el.getAttribute('data-item');
+    el.classList.toggle('done', !!currentState[key]);
+  });
+  updateProgress();
+}
 
-      // Update Progress Bar
-      const pct = Math.round((checkedCount / items.length) * 100);
-      document.getElementById('progressFill').style.width = `${pct}%`;
-      document.getElementById('progressText').textContent = `${checkedCount} dari ${items.length} selesai`;
+async function loadToday(){
+  if(!SCRIPT_URL){
+    document.getElementById('configBox').style.display = 'block';
+    label.textContent = 'Belum tersambung';
+    return;
+  }
+  syncStatus.textContent = 'Memuat data hari ini...';
+  try{
+    const res = await fetch(`${SCRIPT_URL}?action=read&date=${todayStr}`);
+    const data = await res.json();
+    if(data.ok){
+      currentState = data.items || {};
+      syncStatus.textContent = '';
+      document.getElementById('configBox').style.display = 'none';
+    } else {
+      syncStatus.textContent = 'Info: ' + data.error;
+      currentState = {};
+    }
+  } catch(err){
+    syncStatus.textContent = 'Gagal memuat: ' + err.message;
+  }
+  applyStateToDOM();
+}
 
-      // Render Tabel Riwayat
-      renderHistoryTable();
-    });
+async function writeItem(key, value){
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action:'write', date: todayStr, item: key, value: value })
+  });
+  return res.json();
+}
 
-    // Simpan Checklist ke Firebase saat dicentang
-    function saveTodayData(keyId, isChecked) {
-      let index = fullDataArray.findIndex(i => Object.values(i)[0] === today);
-      if (index === -1) {
-        // Jika belum ada record hari ini, buat baru
-        let newRecord = { "Checklist_Harian_—_Waktu_&_Rezeki": today };
-        items.forEach(it => newRecord[it.id] = false);
-        newRecord[keyId] = isChecked;
-        fullDataArray.push(newRecord);
-        index = fullDataArray.length - 1;
-      } else {
-        fullDataArray[index][keyId] = isChecked;
+async function toggleItem(el){
+  const key = el.getAttribute('data-item');
+  if(!SCRIPT_URL){
+    document.getElementById('configBox').style.display = 'block';
+    return;
+  }
+  const newValue = !currentState[key];
+  el.classList.add('saving');
+  try{
+    const data = await writeItem(key, newValue);
+    if(data.ok){
+      currentState[key] = newValue;
+      el.classList.toggle('done', newValue);
+      updateProgress();
+      syncStatus.textContent = '';
+    } else {
+      syncStatus.textContent = 'Gagal simpan: ' + data.error;
+    }
+  } catch(err){
+    syncStatus.textContent = 'Gagal simpan: ' + err.message;
+  }
+  el.classList.remove('saving');
+}
+
+items.forEach(el=>{
+  el.addEventListener('click', ()=>toggleItem(el));
+});
+
+async function resetAll(){
+  if(!SCRIPT_URL){ applyStateToDOM(); return; }
+  syncStatus.textContent = 'Mereset...';
+  for(const el of items){
+    const key = el.getAttribute('data-item');
+    if(currentState[key]){
+      await writeItem(key, false);
+      currentState[key] = false;
+    }
+  }
+  syncStatus.textContent = '';
+  applyStateToDOM();
+}
+
+// ================= Modal Doa =================
+function openDoaModal(e){
+  e.stopPropagation();
+  document.getElementById('doaModal').classList.add('open');
+}
+function openSyukurModal(e){
+  e.stopPropagation();
+  document.getElementById('syukurModal').classList.add('open');
+}
+function openHammModal(e){
+  e.stopPropagation();
+  document.getElementById('hammModal').classList.add('open');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+}
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    closeModal('doaModal');
+    closeModal('syukurModal');
+    closeModal('hammModal');
+  }
+});
+
+// ================= Statistik Sholat (streak & jumlah bulan ini) =================
+const SHOLAT_KEYS = ["Sholat Subuh", "Sholat Dhuha", "Sholat Dzuhur", "Sholat Ashar", "Sholat Maghrib", "Sholat Isya"];
+
+async function loadStats(){
+  if(!SCRIPT_URL) return;
+  const monthPrefix = todayStr.slice(0, 7);
+  for(const key of SHOLAT_KEYS){
+    const badge = document.querySelector(`.stat-badge[data-stat-item="${key}"]`);
+    if(!badge) continue;
+    try{
+      const res = await fetch(`${SCRIPT_URL}?action=stats&item=${encodeURIComponent(key)}&today=${todayStr}&month=${monthPrefix}`);
+      const data = await res.json();
+      if(data.ok){
+        badge.textContent = `🔥 ${data.streak} hari beruntun · ${data.count}x bulan ini`;
       }
+    }catch(err){ /* biarkan kosong kalau gagal */ }
+  }
+}
 
-      // Hitung % Selesai
-      let doneCount = items.filter(it => fullDataArray[index][it.id] === true || fullDataArray[index][it.id] === "TRUE").length;
-      fullDataArray[index]['kolom_18'] = Number((doneCount / items.length).toFixed(4));
+// ================= Auto-reset saat tengah malam =================
+setInterval(() => {
+  const nowStr = getLocalDateStr();
+  if(nowStr !== todayStr){
+    location.reload();
+  }
+}, 30000);
 
-      // Simpan langsung ke Firebase
-      set(ref(db, '/'), fullDataArray);
-    }
+// ================= Init =================
+if(SCRIPT_URL){
+  document.getElementById('configBox').style.display = 'none';
+}
+loadToday().then(loadStats);
+</script>
 
-    // Render Tabel Rekap Riwayat
-    function renderHistoryTable() {
-      const rowDataList = fullDataArray.filter(i => {
-        let v = Object.values(i)[0];
-        return typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}$/);
-      });
+<!-- Realtime Database Integration & Rekap Data -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-      const thRow = document.getElementById('tableHeader');
-      const tbContainer = document.getElementById('tableBody');
-      thRow.innerHTML = '';
-      tbContainer.innerHTML = '';
+  const firebaseConfig = {
+    databaseURL: "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app"
+  };
 
-      const keys = Object.keys(headerMap);
-      keys.forEach(k => {
-        const th = document.createElement('th');
-        th.textContent = headerMap[k];
-        thRow.appendChild(th);
-      });
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app, "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app");
 
-      rowDataList.forEach(item => {
-        const tr = document.createElement('tr');
-        keys.forEach((k, idx) => {
-          const td = document.createElement('td');
-          let val = item[k];
-          if (idx === 0) {
-            td.textContent = val || '-';
-          } else if (k === 'kolom_18') {
-            td.textContent = typeof val === 'number' ? Math.round(val * 100) + '%' : (val || '0%');
-          } else {
-            td.innerHTML = (val === true || val === 'TRUE') ? '<span class="status-true">✓</span>' : '<span class="status-false">✗</span>';
-          }
-          tr.appendChild(td);
-        });
-        tbContainer.appendChild(tr);
-      });
-    }
+  let globalHistoryData = [];
+  let globalHeaderMap = {};
 
-    // Fungsi Unduh CSV
-    document.getElementById('btnDownloadCSV').addEventListener('click', () => {
-      const rowDataList = fullDataArray.filter(i => {
-        let v = Object.values(i)[0];
-        return typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}$/);
-      });
+  const dataRef = ref(db, '/');
+  onValue(dataRef, (snapshot) => {
+    const rawData = snapshot.val();
+    if (!rawData) return;
 
-      const keys = Object.keys(headerMap);
-      let csvContent = "data:text/csv;charset=utf-8,";
-      
-      // Header CSV
-      csvContent += keys.map(k => `"${headerMap[k]}"`).join(",") + "\n";
+    globalHistoryData = Array.isArray(rawData) ? rawData : Object.values(rawData);
+    globalHeaderMap = globalHistoryData.find(item => item["kolom_2"] !== undefined) || {};
 
-      // Baris CSV
-      rowDataList.forEach(item => {
-        let row = keys.map((k, idx) => {
-          let val = item[k];
-          if (idx === 0) return `"${val || ''}"`;
-          if (k === 'kolom_18') return `"${typeof val === 'number' ? Math.round(val * 100) + '%' : (val || '0%')}"`;
-          return `"${(val === true || val === 'TRUE') ? 'TRUE' : 'FALSE'}"`;
-        });
-        csvContent += row.join(",") + "\n";
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `rekapan_sunah_harian_${today}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    const rowDataList = globalHistoryData.filter(item => {
+      let firstVal = Object.values(item)[0];
+      return typeof firstVal === 'string' && firstVal.match(/^\d{4}-\d{2}-\d{2}$/);
     });
-  </script>
+
+    const headerRow = document.getElementById("tableHeader");
+    const bodyContainer = document.getElementById("tableBody");
+
+    if(!headerRow || !bodyContainer) return;
+
+    headerRow.innerHTML = "";
+    bodyContainer.innerHTML = "";
+
+    const keys = Object.keys(globalHeaderMap);
+
+    // 1. Buat Header Tabel
+    keys.forEach(key => {
+      const th = document.createElement("th");
+      th.textContent = globalHeaderMap[key];
+      headerRow.appendChild(th);
+    });
+
+    // 2. Isi Baris Tabel
+    rowDataList.forEach(item => {
+      const tr = document.createElement("tr");
+      
+      keys.forEach((key, index) => {
+        const td = document.createElement("td");
+        let val = item[key];
+
+        if (index === 0) {
+          td.textContent = val || "-";
+        } else if (key === "kolom_18" || globalHeaderMap[key] === "% Selesai") {
+          td.textContent = typeof val === 'number' ? Math.round(val * 100) + "%" : (val || "0%");
+        } else {
+          if (val === true || val === "TRUE") {
+            td.innerHTML = '<span class="status-true">✓</span>';
+          } else if (val === false || val === "FALSE") {
+            td.innerHTML = '<span class="status-false">✗</span>';
+          } else {
+            td.textContent = val !== undefined ? val : "-";
+          }
+        }
+        tr.appendChild(td);
+      });
+      
+      bodyContainer.appendChild(tr);
+    });
+  });
+
+  // Event Handler Unduh CSV
+  document.getElementById('btnDownloadCSV').addEventListener('click', () => {
+    if(!globalHistoryData.length) return;
+
+    const rowDataList = globalHistoryData.filter(item => {
+      let firstVal = Object.values(item)[0];
+      return typeof firstVal === 'string' && firstVal.match(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    const keys = Object.keys(globalHeaderMap);
+    let csvContent = "data:text/csv;charset=utf-8,";
+    
+    // Header
+    csvContent += keys.map(k => `"${globalHeaderMap[k]}"`).join(",") + "\n";
+
+    // Baris Data
+    rowDataList.forEach(item => {
+      let row = keys.map((k, idx) => {
+        let val = item[k];
+        if (idx === 0) return `"${val || ''}"`;
+        if (k === 'kolom_18') return `"${typeof val === 'number' ? Math.round(val * 100) + '%' : (val || '0%')}"`;
+        return `"${(val === true || val === 'TRUE') ? 'TRUE' : 'FALSE'}"`;
+      });
+      csvContent += row.join(",") + "\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `rekap_sunah_harian.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+</script>
 </body>
 </html>
