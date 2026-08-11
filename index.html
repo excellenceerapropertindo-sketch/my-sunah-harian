@@ -3,118 +3,462 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Sunah Harian</title>
+  <title>Rutin Harian — Waktu & Rezeki</title>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
-    h1 { text-align: center; color: #1b4332; margin-bottom: 20px; font-weight: 700; }
-    .table-container { overflow-x: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { border: 1px solid #e0e0e0; padding: 10px 8px; text-align: center; }
-    th { background-color: #2d6a4f; color: white; white-space: nowrap; font-weight: 600; }
-    tr:nth-child(even) { background-color: #f8f9fa; }
-    tr:hover { background-color: #f1f5f3; }
-    .status-true { color: #2d6a4f; font-weight: bold; font-size: 15px; }
-    .status-false { color: #d90429; font-weight: bold; font-size: 15px; }
-    .date-cell { font-weight: 600; color: #2b2d42; white-space: nowrap; }
-    .percent-cell { font-weight: 700; color: #1b4332; background-color: #e8f5e9; }
+    :root {
+      --bg-dark: #0f2b26;
+      --card-dark: #123730;
+      --accent-gold: #c9a227;
+      --text-light: #ffffff;
+      --text-muted: #8e9b97;
+      --bg-light: #f4f7f6;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-light);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    /* Hero Banner Utama */
+    .hero {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      padding: 40px 20px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .hero-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-subtitle {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 15px 0;
+      font-family: Georgia, serif;
+    }
+
+    .hero-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #b0c2be;
+      max-width: 550px;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.1);
+      height: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 450px;
+    }
+
+    .progress-bar-fill {
+      background: var(--accent-gold);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--accent-gold);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 800px;
+      margin: 20px auto 40px auto;
+      padding: 0 20px;
+    }
+
+    .date-header {
+      font-size: 14px;
+      color: #555;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* Section Category */
+    .category-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f2b26;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-title span {
+      color: var(--accent-gold);
+    }
+
+    /* Checklist Card */
+    .checklist-item {
+      background: white;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+
+    .checklist-item:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--bg-dark);
+    }
+
+    .item-content {
+      flex: 1;
+    }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .item-desc {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    /* Tabel Riwayat & Export CSV */
+    .history-section {
+      margin-top: 50px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .history-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--bg-dark);
+    }
+
+    .btn-csv {
+      background-color: var(--bg-dark);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-csv:hover {
+      background-color: #164038;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f8fafc;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .status-true { color: #16a34a; font-weight: bold; }
+    .status-false { color: #dc2626; font-weight: bold; }
   </style>
 </head>
 <body>
 
-  <h1>Dashboard Sunah Harian</h1>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr id="tableHeader">
-          <th>Memuat data...</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-      </tbody>
-    </table>
+  <!-- Banner Atas Utama (Sesuai HTML Lama) -->
+  <div class="hero">
+    <div class="hero-container">
+      <div class="hero-subtitle">RUTINITAS HARIAN</div>
+      <h1 class="hero-title">Waktu & Rezeki</h1>
+      <div class="hero-desc">
+        Checklist manajemen waktu ala sunnah, dipadukan dengan amalan penunjang kelancaran rezeki — mengikuti ritme lima waktu sholat. Tersambung ke database, sinkron di semua device.
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 dari 16 selesai</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="date-header" id="currentDateText">Hari ini — ...</div>
+
+    <!-- Subuh -->
+    <div class="category-title"><span>SUBUH</span> Mengawali Hari</div>
+    <div id="sectionSubuh"></div>
+
+    <!-- Dhuha -->
+    <div class="category-title"><span>DHUHA</span> Ikhtiar & Kerja</div>
+    <div id="sectionDhuha"></div>
+
+    <!-- Dzuhur & Ashar -->
+    <div class="category-title"><span>DZUHUR - ASHAR</span> Menjaga Ritme</div>
+    <div id="sectionDzuhur"></div>
+
+    <!-- Maghrib & Isya -->
+    <div class="category-title"><span>MAGHRIB - ISYA</span> Penutup Hari</div>
+    <div id="sectionMalam"></div>
+
+    <!-- Tabel Riwayat Data (Spreadsheet Rekap) -->
+    <div class="history-section">
+      <div class="history-header">
+        <div class="history-title">Riwayat Rekap Harian</div>
+        <button class="btn-csv" id="btnDownloadCSV">📥 Unduh CSV</button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr id="tableHeader"><th>Memuat riwayat...</th></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       databaseURL: "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app, "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app");
+    const db = getDatabase(app, firebaseConfig.databaseURL);
 
+    // Definisi Item Amalan Harian
+    const items = [
+      { id: 'kolom_2', name: 'Sholat Subuh berjamaah / tepat waktu', desc: 'Awal keberkahan waktu', sec: 'sectionSubuh' },
+      { id: 'kolom_3', name: 'Sedekah subuh', desc: 'Mengawali hari dengan memberi sebelum meminta', sec: 'sectionSubuh' },
+      { id: 'kolom_4', name: 'Dzikir pagi & istighfar', desc: 'Istighfar dikaitkan dengan datangnya rezeki', sec: 'sectionSubuh' },
+      { id: 'kolom_5', name: 'Susun 2-3 prioritas hari ini', desc: 'Fokus pada hal berdampak paling besar', sec: 'sectionSubuh' },
+      
+      { id: 'kolom_6', name: 'Sholat Dhuha', desc: 'Anjuran sholatnya shahih', sec: 'sectionDhuha' },
+      { id: 'kolom_7', name: 'Mulai kerja dengan doa & niat', desc: 'Usaha + tawakal', sec: 'sectionDhuha' },
+      { id: 'kolom_8', name: 'Kerjakan tugas terpenting dulu', desc: 'Bukan yang termudah', sec: 'sectionDhuha' },
+
+      { id: 'kolom_9', name: 'Sholat Dzuhur', desc: 'Jeda kerja sejenak', sec: 'sectionDzuhur' },
+      { id: 'kolom_10', name: 'Sholat Ashar', desc: 'Menjaga sholat wustha', sec: 'sectionDzuhur' },
+      { id: 'kolom_11', name: 'Hubungi / tanya kabar keluarga atau kerabat', desc: 'Menjaga silaturahmi', sec: 'sectionDzuhur' },
+
+      { id: 'kolom_12', name: 'Sholat Maghrib', desc: 'Ibadah pembuka malam', sec: 'sectionMalam' },
+      { id: 'kolom_13', name: 'Sholat Isya', desc: 'Penyempurna sholat fardhu', sec: 'sectionMalam' },
+      { id: 'kolom_14', name: 'Syukuri pencapaian hari ini', desc: 'Menjaga pikiran tetap positif', sec: 'sectionMalam' },
+      { id: 'kolom_15', name: 'Doa syukur menutup hari', desc: 'Menutup hari dengan rida', sec: 'sectionMalam' },
+      { id: 'kolom_16', name: 'Muhasabah singkat', desc: 'Evaluasi niat & amalan hari ini', sec: 'sectionMalam' },
+      { id: 'kolom_17', name: 'Tidur lebih awal', desc: 'Agar bisa bangun awal', sec: 'sectionMalam' }
+    ];
+
+    // Format Tanggal Hari Ini (YYYY-MM-DD)
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('currentDateText').textContent = `Hari ini — ${today}`;
+
+    let fullDataArray = [];
+    let headerMap = {};
+
+    // Render Checklist UI
+    items.forEach(item => {
+      const parent = document.getElementById(item.sec);
+      const div = document.createElement('div');
+      div.className = 'checklist-item';
+      div.innerHTML = `
+        <input type="checkbox" id="chk_${item.id}" data-id="${item.id}">
+        <div class="item-content">
+          <div class="item-title">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+        </div>
+      `;
+      parent.appendChild(div);
+
+      div.querySelector('input').addEventListener('change', (e) => {
+        saveTodayData(item.id, e.target.checked);
+      });
+    });
+
+    // Jalankan Sinkronisasi Firebase
     const dataRef = ref(db, '/');
     onValue(dataRef, (snapshot) => {
       const rawData = snapshot.val();
       if (!rawData) return;
 
-      // Konversi data ke array jika berupa objek
-      let dataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
-
-      // Cari baris yang berisi pemetaan nama kolom (baris yang memiliki kunci "kolom_2")
-      let headerMapping = dataArray.find(item => item["kolom_2"] !== undefined);
+      fullDataArray = Array.isArray(rawData) ? rawData : Object.values(rawData);
       
-      // Ambil hanya baris data tanggal (abaikan baris instruksi dan baris header)
-      let rowDataList = dataArray.filter(item => {
-        let firstVal = Object.values(item)[0];
-        return typeof firstVal === 'string' && firstVal.match(/^\d{4}-\d{2}-\d{2}$/);
+      // Ambil Pemetaan Header Nama Kolom
+      headerMap = fullDataArray.find(i => i['kolom_2'] !== undefined) || {};
+
+      // Update Checklist Hari Ini
+      const todayRecord = fullDataArray.find(i => Object.values(i)[0] === today);
+      let checkedCount = 0;
+
+      items.forEach(item => {
+        const chk = document.getElementById(`chk_${item.id}`);
+        if (todayRecord && (todayRecord[item.id] === true || todayRecord[item.id] === "TRUE")) {
+          chk.checked = true;
+          checkedCount++;
+        } else {
+          chk.checked = false;
+        }
       });
 
-      if (!headerMapping || rowDataList.length === 0) return;
+      // Update Progress Bar
+      const pct = Math.round((checkedCount / items.length) * 100);
+      document.getElementById('progressFill').style.width = `${pct}%`;
+      document.getElementById('progressText').textContent = `${checkedCount} dari ${items.length} selesai`;
 
-      const headerRow = document.getElementById("tableHeader");
-      const bodyContainer = document.getElementById("tableBody");
+      // Render Tabel Riwayat
+      renderHistoryTable();
+    });
 
-      headerRow.innerHTML = "";
-      bodyContainer.innerHTML = "";
+    // Simpan Checklist ke Firebase saat dicentang
+    function saveTodayData(keyId, isChecked) {
+      let index = fullDataArray.findIndex(i => Object.values(i)[0] === today);
+      if (index === -1) {
+        // Jika belum ada record hari ini, buat baru
+        let newRecord = { "Checklist_Harian_—_Waktu_&_Rezeki": today };
+        items.forEach(it => newRecord[it.id] = false);
+        newRecord[keyId] = isChecked;
+        fullDataArray.push(newRecord);
+        index = fullDataArray.length - 1;
+      } else {
+        fullDataArray[index][keyId] = isChecked;
+      }
 
-      // Dapatkan kunci-kunci kolom secara terurut
-      const keys = Object.keys(headerMapping);
+      // Hitung % Selesai
+      let doneCount = items.filter(it => fullDataArray[index][it.id] === true || fullDataArray[index][it.id] === "TRUE").length;
+      fullDataArray[index]['kolom_18'] = Number((doneCount / items.length).toFixed(4));
 
-      // 1. Buat Header Tabel yang Rapi
-      keys.forEach(key => {
-        const th = document.createElement("th");
-        th.textContent = headerMapping[key];
-        headerRow.appendChild(th);
+      // Simpan langsung ke Firebase
+      set(ref(db, '/'), fullDataArray);
+    }
+
+    // Render Tabel Rekap Riwayat
+    function renderHistoryTable() {
+      const rowDataList = fullDataArray.filter(i => {
+        let v = Object.values(i)[0];
+        return typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}$/);
       });
 
-      // 2. Isi Baris Data
+      const thRow = document.getElementById('tableHeader');
+      const tbContainer = document.getElementById('tableBody');
+      thRow.innerHTML = '';
+      tbContainer.innerHTML = '';
+
+      const keys = Object.keys(headerMap);
+      keys.forEach(k => {
+        const th = document.createElement('th');
+        th.textContent = headerMap[k];
+        thRow.appendChild(th);
+      });
+
       rowDataList.forEach(item => {
-        const tr = document.createElement("tr");
-        
-        keys.forEach((key, index) => {
-          const td = document.createElement("td");
-          let val = item[key];
-
-          if (index === 0) {
-            // Kolom Tanggal
-            td.textContent = val || "-";
-            td.className = "date-cell";
-          } else if (key === "kolom_18" || headerMapping[key] === "% Selesai") {
-            // Kolom Persentase
-            if (typeof val === 'number') {
-              td.textContent = Math.round(val * 100) + "%";
-            } else {
-              td.textContent = val || "0%";
-            }
-            td.className = "percent-cell";
+        const tr = document.createElement('tr');
+        keys.forEach((k, idx) => {
+          const td = document.createElement('td');
+          let val = item[k];
+          if (idx === 0) {
+            td.textContent = val || '-';
+          } else if (k === 'kolom_18') {
+            td.textContent = typeof val === 'number' ? Math.round(val * 100) + '%' : (val || '0%');
           } else {
-            // Kolom Checklist
-            if (val === true || val === "TRUE") {
-              td.innerHTML = '<span class="status-true">✓</span>';
-            } else if (val === false || val === "FALSE") {
-              td.innerHTML = '<span class="status-false">✗</span>';
-            } else {
-              td.textContent = val !== undefined ? val : "-";
-            }
+            td.innerHTML = (val === true || val === 'TRUE') ? '<span class="status-true">✓</span>' : '<span class="status-false">✗</span>';
           }
           tr.appendChild(td);
         });
-        
-        bodyContainer.appendChild(tr);
+        tbContainer.appendChild(tr);
       });
+    }
+
+    // Fungsi Unduh CSV
+    document.getElementById('btnDownloadCSV').addEventListener('click', () => {
+      const rowDataList = fullDataArray.filter(i => {
+        let v = Object.values(i)[0];
+        return typeof v === 'string' && v.match(/^\d{4}-\d{2}-\d{2}$/);
+      });
+
+      const keys = Object.keys(headerMap);
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      // Header CSV
+      csvContent += keys.map(k => `"${headerMap[k]}"`).join(",") + "\n";
+
+      // Baris CSV
+      rowDataList.forEach(item => {
+        let row = keys.map((k, idx) => {
+          let val = item[k];
+          if (idx === 0) return `"${val || ''}"`;
+          if (k === 'kolom_18') return `"${typeof val === 'number' ? Math.round(val * 100) + '%' : (val || '0%')}"`;
+          return `"${(val === true || val === 'TRUE') ? 'TRUE' : 'FALSE'}"`;
+        });
+        csvContent += row.join(",") + "\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `rekapan_sunah_harian_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
   </script>
 </body>
