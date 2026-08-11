@@ -1,23 +1,88 @@
-<!-- Script Firebase Realtime Database -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Sunah Harian</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9; }
+    h1 { text-align: center; color: #2c3e50; }
+    .table-container { overflow-x: auto; margin-top: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background-color: #27ae60; color: white; white-space: nowrap; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    .status-true { color: #27ae60; font-weight: bold; }
+    .status-false { color: #e74c3c; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h1>Dashboard Sunah Harian</h1>
+  <div class="table-container">
+    <table id="checklistTable">
+      <thead>
+        <tr id="tableHeader">
+          <th>Memuat data...</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+      </tbody>
+    </table>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // KODE CONFIGURASI FIREBASE
     const firebaseConfig = {
       databaseURL: "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
-    // Inisialisasi Firebase App
     const app = initializeApp(firebaseConfig);
-    
-    // Menghubungkan ke Database dengan memberikan alamat URL-nya secara langsung
     const db = getDatabase(app, "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app");
 
-    // Ambil data dari Firebase
     const dataRef = ref(db, '/');
     onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
-      console.log("Data Firebase berhasil diambil:", data);
+      if (!data) return;
+
+      const headerRow = document.getElementById("tableHeader");
+      const bodyContainer = document.getElementById("tableBody");
+
+      // Bersihkan isi tabel sebelum diisi
+      headerRow.innerHTML = "";
+      bodyContainer.innerHTML = "";
+
+      // Ambil daftar nama kolom dari baris pertama
+      const keys = Object.keys(data[0]);
+
+      // Buat Header Tabel
+      keys.forEach(key => {
+        const th = document.createElement("th");
+        th.textContent = key.replace(/_/g, " ");
+        headerRow.appendChild(th);
+      });
+
+      // Isi Baris Data
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+        keys.forEach(key => {
+          const td = document.createElement("td");
+          let val = item[key];
+
+          if (val === true || val === "TRUE") {
+            td.innerHTML = '<span class="status-true">✓</span>';
+          } else if (val === false || val === "FALSE") {
+            td.innerHTML = '<span class="status-false">✗</span>';
+          } else {
+            td.textContent = val !== undefined ? val : "-";
+          }
+          tr.appendChild(td);
+        });
+        bodyContainer.appendChild(tr);
+      });
     });
   </script>
+</body>
+</html>
