@@ -1,27 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Sunah Harian</title>
-</head>
-<body>
-
-  <h1>Dashboard Sunah Harian</h1>
-  <div id="app"></div>
-
-  <!-- Script Firebase Realtime Database -->
+<!-- Script Firebase Realtime Database -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Tempelkan firebaseConfig milik Anda di sini
+    // KODE CONFIGURASI FIREBASE
     const firebaseConfig = {
-      // PASTE KODE CONFIG DARI FIREBASE DI SINI
+      databaseURL: "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
 
+    // Inisialisasi Firebase App
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    
+    // Menghubungkan ke Database dengan memberikan alamat URL-nya secara langsung
+    const db = getDatabase(app, "https://sunah-harian-default-rtdb.asia-southeast1.firebasedatabase.app");
 
     // Ambil data dari Firebase
     const dataRef = ref(db, '/');
@@ -30,5 +21,3 @@
       console.log("Data Firebase berhasil diambil:", data);
     });
   </script>
-</body>
-</html>
